@@ -1,6 +1,6 @@
 
 const os = require('os')
-const getPerformanceData = require('./utils/performanceData')
+const {getPerformanceData, getInfo} = require('./utils/performanceData')
 const  io =require('socket.io-client')
 const socket = io('http://127.0.0.1:8080');
 
@@ -20,15 +20,12 @@ socket.on('connect',  ()=>{
   }
 
   socket.emit('clientAuth', 'nodeClientKey')
-  
-  getPerformanceData().then((data)=>{
-       socket.emit('initialData', {...data, macAddress})
-  }).catch(err=>console.log(err))
+  socket.emit('initialData', {...getInfo(), macAddress})
 
 
   perfDataInterval = setInterval(async ()=>{
       const data = await getPerformanceData();
-      socket.emit('perfData',  data);
+      socket.emit('perfData',  {...data, macAddress});
   },1000) 
 
 

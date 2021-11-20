@@ -1,33 +1,40 @@
 
 const os = require("os");
 
-async function performanceData() {
+async function getPerformanceData() {
 
- const osType = os.type() === "Darwin" ? "MacOs" : os.type();
  const uptime = os.uptime();
- const totalMemory = os.totalmem();
  const freeMemory = os.freemem();
+ const totalMemory = os.totalmem();
  const usedMem = totalMemory - freeMemory;
  const memoryUsage = Math.floor(100 * (usedMem / totalMemory));
- const cpus = os.cpus();
- const cpuModel = cpus[0].model;
- const numThreads = cpus.length;
- const clockSpeed = cpus[0].speed;
-
  const cpuLoad = await getCpuLoad();
 
- return {
-   osType,
+ return {  
    uptime,
-   totalMem: Math.floor(totalMemory/ (1024**3)),
+   usedMem,
    freeMem :Math.floor(freeMemory/ (1024**3)),
    memoryUsage,
-   cpuModel,
-   numCores : numThreads /2 ,
-   numThreads,
-   clockSpeed,
    cpuLoad,
  };
+}
+
+function getInfo(){
+  
+  const osType = os.type() === "Darwin" ? "MacOs" : os.type();
+  const cpus = os.cpus();
+  const totalMemory = os.totalmem();
+  const cpuModel = cpus[0].model;
+  const numThreads = cpus.length;
+  const clockSpeed = cpus[0].speed;
+  return {
+    osType,
+    totalMem: Math.floor(totalMemory/ (1024**3)),
+    cpuModel,
+    numCores : numThreads /2 ,
+    numThreads,
+    clockSpeed,
+  }
 }
 
 function getCpuAverage() {
@@ -59,4 +66,4 @@ function getCpuLoad() {
  });
 }
 
-module.exports = performanceData;
+module.exports = {getPerformanceData, getInfo};

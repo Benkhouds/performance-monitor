@@ -3,6 +3,7 @@ const cluster= require('cluster')
 const net  = require('net')
 const farmhash = require('farmhash')
 const express = require('express')
+const cors = require('cors')
 const sio = require('socket.io')
 const { createAdapter } = require("@socket.io/redis-adapter");
 const { createClient } = require("redis");
@@ -62,6 +63,8 @@ async function main(){
          //create http server for each worker 
          const app= express();
          const expressServer = app.listen(0)
+
+         app.use(cors({origin: 'http://localhost:3000'}))
       
          const io  = sio(expressServer);
          const publishClient = createClient({host:'localhost' , port : 6379})
